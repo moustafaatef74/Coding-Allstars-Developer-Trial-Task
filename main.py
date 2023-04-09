@@ -1,5 +1,6 @@
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from pydantic import BaseModel
+from fastapi.responses import HTMLResponse
 from extract import *
 import os
 
@@ -16,16 +17,17 @@ class Msg(BaseModel):
 @app.get("/")
 
 async def root():
-    return {"message": "Hello World. Moustafa Atef"}
+    return {"message": "Hello World. Welcome to FastAPI!"}
 
 
 @app.get("/homepage")
 async def demo_get():
     driver=createDriver()
 
-    homepage = getGoogleHomepage(driver)
+    homepage = checkWebsites()
     driver.close()
-    return homepage
+    html_content = homepage
+    return HTMLResponse(content=html_content, status_code=200)
 
 @app.post("/backgroundDemo")
 async def demo_post(inp: Msg, background_tasks: BackgroundTasks):
