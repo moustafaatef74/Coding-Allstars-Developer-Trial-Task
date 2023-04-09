@@ -27,7 +27,7 @@ async def demo_get():
     homepage = checkWebsites()
     driver.close()
     html_content = homepage
-    return HTMLResponse(content=html_content, status_code=200)
+    return homepage
 
 @app.post("/backgroundDemo")
 async def demo_post(inp: Msg, background_tasks: BackgroundTasks):
