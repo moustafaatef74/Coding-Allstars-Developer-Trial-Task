@@ -20,7 +20,7 @@ async def root():
     return {"message": "Hello World. Welcome to FastAPI!"}
 
 
-@app.get("/homepage")
+@app.get("/")
 async def demo_get():
     driver=createDriver()
 

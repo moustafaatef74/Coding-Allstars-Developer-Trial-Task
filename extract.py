@@ -15,8 +15,8 @@ from urllib.request import urlopen
 from PIL import Image
 
 
-def readCSV(filename: str) -> list:
-    with open(filename, 'r') as csvfile:
+def readCSV()-> list:
+    with open("data.csv", 'r') as csvfile:
         reader = csv.reader(csvfile)
         headers = next(reader) # skip the first line
         values = [row[0] for row in reader]
@@ -28,7 +28,7 @@ def createDriver() -> webdriver.Chrome:
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    
+
     prefs = {"profile.managed_default_content_settings.images":2}
     chrome_options.headless = True
 
@@ -44,7 +44,8 @@ def isHindi(text: str) -> bool:
     except:
         return False
 
-def checkWebsites(websites: list) -> dict:
+def checkWebsites() -> dict:
+    websites = readCSV()
     results = {}
     driver = webdriver.Chrome()
     for website in websites:
@@ -68,7 +69,7 @@ def checkWebsites(websites: list) -> dict:
                     break
             if hindi_found:
                 results[website] = "PASS"
-                
+
                 # Hover on the button with class="hidden weight-semi large-up-block text-1 color-charcoal padding-right-small"
                 button = driver.find_element(By.CLASS_NAME, "hidden.weight-semi.large-up-block.text-1.color-charcoal.padding-right-small")
                 hover = ActionChains(driver).move_to_element(button)
@@ -77,7 +78,6 @@ def checkWebsites(websites: list) -> dict:
                 # Check if class="sticky-footer" changed to class="sticky-footer nav-open"
                 try:
                     wait.until(EC.presence_of_element_located((By.CLASS_NAME, "sticky-footer.nav-open")))
-                    print("pass")
                 except:
                     results[website] += ", Javascript dropdown not working properly"
 
@@ -90,8 +90,7 @@ def checkWebsites(websites: list) -> dict:
                     if img_size < 50000:
                         results[website] += ", Images not high resolution"
                     else:
-                        print("Img OK")
-                        
+                        pass
 
                 hrefs = []
                 for link in driver.find_elements(By.TAG_NAME, 'a'):
@@ -132,11 +131,4 @@ def checkWebsites(websites: list) -> dict:
     driver.quit()
     return results
 
-
-def doBackgroundTask(inp):
-    print("Doing background task")
-    print(inp.msg)
-    print("Done")
-results = checkWebsites(readCSV("data.csv"))
-print(results)
 
