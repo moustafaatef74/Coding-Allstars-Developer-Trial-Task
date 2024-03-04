@@ -26,7 +26,6 @@ async def demo_get():
 
     homepage = checkWebsites()
     driver.close()
-    html_content = homepage
     return homepage
 
 @app.post("/backgroundDemo")
